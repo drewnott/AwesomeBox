@@ -6,7 +6,7 @@ var Repeater = function(array)
     while( i < array.length)
       {
     //Adds the number in the zeroth position of the ith subarray
-    //to the string as many times as the number in its first position dictates
+    //to the string as many times as the number in the first position of the same subarray dictates
        for(var j = 0; j < array[i][1]; j++)
        {
             string += array[i][0];
