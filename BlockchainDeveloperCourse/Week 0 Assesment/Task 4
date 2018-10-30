@@ -2,7 +2,7 @@ var gaussTheCashier = function(total, cash)
 {
    mulla = cash - total;
    mulla = mulla.toString();
-   return (dollarBills(mulla.slice(0, mulla.length -2)) + " " + pocketChange(mulla.slice(-2)));
+   return (dollarBills(mulla.slice(0, mulla.length -2)) + ", " + pocketChange(mulla.slice(-2)));
     
 }
 var dollarBills = function(mulla)
