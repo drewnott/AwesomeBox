@@ -1,1 +1,71 @@
-
+var gaussTheCashier = function(total, cash)
+{
+   mulla = cash - total;
+   mulla = mulla.toString();
+   return (dollarBills(mulla.slice(0, mulla.length -2)) + " " + pocketChange(mulla.slice(-2)));
+    
+}
+var dollarBills = function(mulla)
+{
+    mulla = parseInt(mulla)*100;
+    var moneyclip = [];
+        while (mulla > 0 )
+        {   
+        switch (true)
+            { 
+        case (mulla >= 2000):
+             moneyclip.push("TwentyDollarBills:"+ " " +Math.floor(mulla/2000));
+            mulla = mulla % 2000;
+            break;
+        case (mulla < 2000 && mulla >= 1000):
+            moneyclip.push("TenDollarBills:" + " " +Math.floor(mulla/1000));
+            mulla = mulla % 1000;
+            break;
+        case (mulla < 1000 && mulla >= 500):
+            moneyclip.push("FiveDollarBills:"+ " " + Math.floor(mulla/500));
+            mulla = mulla % 500;
+            break;
+        case (mulla < 500 && mulla >= 200):
+            moneyclip.push("TwoDollarBills:"+ " " + Math.floor(mulla/200));
+            mulla = mulla % 200;
+            break;
+        case (mulla < 200 && mulla >= 100):
+            moneyclip.push("DollarBills:"+ " " + Math.floor(mulla/100));
+            mulla = mulla % 100;
+            break;
+        default:
+            break;
+            }
+        }
+        return moneyclip.join();
+}
+var pocketChange = function(mulla)
+{
+    var moneyclip = [];
+    mulla = parseInt(mulla);
+        while (mulla > 0 )
+        {   
+        switch (true)
+            { 
+        case (mulla >= 25):
+            moneyclip.push("Quarters:" +" " + Math.floor(mulla/25));
+            mulla = mulla % 25;
+            break;
+        case (mulla < 25 && mulla >= 10):
+            moneyclip.push("Dimes:" + " " + Math.floor(mulla/10));
+            mulla = mulla % 10;
+            break;
+        case (mulla < 10 && mulla >= 5):
+            moneyclip.push("Nickels:"+ " " + Math.floor(mulla/5));
+            mulla = mulla % 5;
+            break;
+        case (mulla < 5 && mulla >= 1):
+            moneyclip.push("Pennies:"+ " " + Math.floor(mulla/1));
+            mulla = mulla % 1;
+            break;
+        default:
+            break;
+            }
+        }
+        return moneyclip.join();
+}
