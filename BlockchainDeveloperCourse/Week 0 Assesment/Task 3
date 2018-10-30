@@ -1,13 +1,13 @@
 //Converts numerical date input into a readable date
 var talkingCalender = function(worstformatever)
 {
-    var output = WhatMonthIsIt(worstformatever.slice(5,7)) 
-                 + " " + WhatDayIsIt(worstformatever.slice(8,10))
-                 + ", " + WhatYearIsIt(worstformatever.slice(0,4));
+    var output = whatMonthIsIt(worstformatever.slice(5,7)) 
+                 + " " + whatDayIsIt(worstformatever.slice(8,10))
+                 + ", " + whatYearIsIt(worstformatever.slice(0,4));
     return output;
 }
 
-var WhatMonthIsIt = function(data)
+var whatMonthIsIt = function(data)
 {
 //Assigns month to the respective numerical input. Since the months in the array are in order
 //from January (1st month) to December (12th month) the corresponding month using the input would 
@@ -17,7 +17,7 @@ var WhatMonthIsIt = function(data)
     return(month[data-1]);
 }
 
-var WhatDayIsIt = function(data)
+var whatDayIsIt = function(data)
 {   //Formats date input from string to integer with the appropriate suffix
     if (data.charAt(1) === '1' & data !== '11')
         return(parseInt(data) + "st");
@@ -29,7 +29,7 @@ var WhatDayIsIt = function(data)
         return (parseInt(data) + "th");
 }
 //Formats year
-var WhatYearIsIt = function(data)
+var whatYearIsIt = function(data)
 {
     return(parseInt(data));
 }
