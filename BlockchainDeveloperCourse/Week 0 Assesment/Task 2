@@ -1,14 +1,14 @@
 //Takes array as input and adds all the numbers in the array with the specified parity
-var ParitySumma = function(array, parity)
+var paritySumma = function(array, parity)
 {
     if (parity === "even")
-        print(EvenSumma(array));
+        print(evenSumma(array));
     else if (parity === "odd")
-        print(OddSumma(array));
+        print(oddSumma(array));
     
 }
 //Sums all the even numbers in an the array
-var EvenSumma = function(info)
+var evenSumma = function(info)
 {
     var evenSum = 0;
     //Traverses through integers in the array
@@ -22,7 +22,7 @@ var EvenSumma = function(info)
     return evenSum;
 }
 //Sums all the odd numbers in an array
-var OddSumma = function(info)
+var oddSumma = function(info)
 {
     var oddSum = 0;
     //Traverses through integers in the array
