@@ -31,7 +31,7 @@ pragma solidity ^0.4.25;
     maxBidder = msg.sender; //Assigns max bidder's current address if latter is true
     maxBid = msg.value; // . . . current bid to max bid variable
 
-    emit BidAccepted(maxBidder, maxBid); // Step 5
+    emit BidAccepted(maxBidder, maxBid); // Records event in Ethereum log (i.e address of user in event and amount of bid)
     }
             
     function end() external ownerOnly 
@@ -44,7 +44,8 @@ pragma solidity ^0.4.25;
     end = true;
     owner.transfer(maxBid);
 
-    emit AuctionComplete(maxBidder, maxBid); // Emit event
+    emit AuctionComplete(maxBidder, maxBid); //Records auction winner in Ethereum log (i.e address of winner and amount of bid)
+    }
     }
     
     }
