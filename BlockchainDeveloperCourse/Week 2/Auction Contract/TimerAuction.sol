@@ -37,7 +37,7 @@ pragma solidity ^0.4.25;
     function end() external ownerOnly 
     {
     // Check that time has expired and can only end once
-    require(!end require(!end && now >= auctionEnd);
+    require(!end && now >= auctionEnd);
 
     // Update internal states and transfer ether to owner
     end = true;
