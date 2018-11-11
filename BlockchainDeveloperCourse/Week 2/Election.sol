@@ -13,7 +13,7 @@ contract Election {         //Creates Smart Contract on Ethereum called "Electio
     }
     modifier eligible() {
         require(voters[msg.sender].authorized,"Ineligible to Vote"); 
-        require(voters[msg.sender].voted, "No double voting"); 
+        require(!voters[msg.sender].voted, "No double voting"); //The default value of a boolean is a null value or fasle
         _;
     }
     struct Candidate {
