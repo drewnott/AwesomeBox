@@ -9,7 +9,12 @@ contract ERC20 is IERC20 {
   mapping (address => uint256) internal _balances;
   mapping (address => mapping (address => uint256)) internal _allowed;
   uint256 internal _totalSupply;
-
+  
+  modifier validDestination( address to ) {
+        require(to != address(0x0),"Invalid address");
+        require(to != address(this),"Invalid address" );
+        _;
+    }
     
   function totalSupply() public view returns (uint256) {
     return _totalSupply;
@@ -24,8 +29,9 @@ contract ERC20 is IERC20 {
   }
   
   function transfer(address to, uint256 value) public returns (bool) {
+        require(to != address(0),"Invalid address");
+        require(to != address(this),"Invalid address" );
         require(_balances[msg.sender] >= value, "Insufficient Funds");
-        require(to != address(0), "Invalid address");  //Checks for valid address
         _balances[msg.sender] -= value; //Updates msg.sender's balance
         _balances[to] += value; //Updates recipient's balance
         return true;
@@ -39,7 +45,8 @@ contract ERC20 is IERC20 {
   function transferFrom(address from, address to, uint256 value) public returns (bool) {
       //Note: "from" is the owner of the allowance, "to" is to whom the tokens are going
       // and the caller of the function(msg.sender) is approved spender 
-    require(to != address(0), "Invalid address");  //Checks for valid address  
+    require(to != address(0),"Invalid address");
+    require(to != address(this),"Invalid address" ); 
     require(approve(msg.sender,_allowed[from][msg.sender]),"Unathorized Access"); //The message sender must have approved spender to use their tokens
     require(value <= _balances[from],"Insufficient allowance"); //Owner of allowance must have funds in their account
     require(value <= _allowed[from][to], "The requested amount exceeds allowance");
