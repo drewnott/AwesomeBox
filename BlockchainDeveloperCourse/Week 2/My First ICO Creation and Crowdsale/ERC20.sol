@@ -1,4 +1,4 @@
-Hi @Lopes. I was just reading an article about pragma solidity ^0.4.24;
+pragma solidity ^0.4.24;
 
 import "./IERC20.sol";
 import "./SafeMath.sol";
@@ -25,7 +25,7 @@ contract ERC20 is IERC20 {
   
   function transfer(address to, uint256 value) public returns (bool) {
         require(_balances[msg.sender] >= value, "Insufficient Funds");
-        to.transfer(value); //Transfers funds to specified address
+        require(to != address(0), "Invalid address");  //Checks for valid address
         _balances[msg.sender] -= value; //Updates msg.sender's balance
         _balances[to] += value; //Updates recipient's balance
         return true;
@@ -39,17 +39,12 @@ contract ERC20 is IERC20 {
   function transferFrom(address from, address to, uint256 value) public returns (bool) {
       //Note: "from" is the owner of the allowance, "to" is to whom the tokens are going
       // and the caller of the function(msg.sender) is approved spender 
-      
+    require(to != address(0), "Invalid address");  //Checks for valid address  
     require(approve(msg.sender,_allowed[from][msg.sender]),"Unathorized Access"); //The message sender must have approved spender to use their tokens
-    require(value <= _balances[from]);
+    require(value <= _balances[from],"Insufficient allowance"); //Owner of allowance must have funds in their account
     require(value <= _allowed[from][to], "The requested amount exceeds allowance");
     
-    to.transfer(value); //Tranfers value to receiver, but deducts from _balances[msg.sender]
-                        //Does transfer() update the account of msg.sender ?
-                        
-    _balances[msg.sender] += value;//Adds amount back because the msg.sender is using their allowance, not their balance.
-                                    //Note: Is their a cleaner way to do line 83 - 86 ?
-                                    
+    _balances[to] += value; //Tranfers value to receiver
     _allowed[from][msg.sender] -= value; //Updates msg.sender Allowance
     _balances[from] -= value;   //Update Owner of Allowance Wallet Balance
     return true;
