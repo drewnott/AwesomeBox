@@ -10,7 +10,7 @@ contract Crowdsale is ERC20 {
     uint256 private cap = 100000000000000000000*1 ether; // maximum amount of ether to be raised
     uint256 private weiRaised = 0; // current amount of wei raised
 
-    uint256 private rate = 100; // price in wei per smallest unit of token (e.g. 1 wei = 10 smallet unit of a token)
+    uint256 private rate ; // price in wei per smallest unit of token (e.g. 1 wei = 10 smallet unit of a token)
     address private wallet; // wallet to hold the ethers
     IERC20 private token; // address of erc20 tokens
 
@@ -37,9 +37,10 @@ contract Crowdsale is ERC20 {
     * @param _wallet Address where collected funds will be forwarded to
     * @param _token Address of the token being sold
     */
-    constructor(uint256 _rate, address _wallet, IERC20 _token) public {
-       
-        
+   constructor(uint256 _rate, address _wallet, IERC20 _token) public {
+       rate = _rate;
+       wallet = _wallet;
+       token = _token;
     }
     //I wasn't really sure what I had to use this constructor.
 
@@ -84,5 +85,4 @@ contract Crowdsale is ERC20 {
 
 
 }
-
 
