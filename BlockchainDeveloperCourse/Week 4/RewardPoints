@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5;
 
 contract RewardPoints {
     address private owner;
@@ -101,13 +101,25 @@ contract RewardPoints {
         require(isUserValid(addrToUserId[msg.sender]));
         _;
     }
-
+    
     constructor() public {
         // Do not use ID 0 for first user and merchant to avoid returning invalid
         // first merchant/user when looking it up with addrToMerchantID mapping
         merchants.push(Merchant(0, 0, false));
         users.push(User(0, 0, false, 0, 0));
         owner = msg.sender;
+    }
+    
+    function NotMerchant(address addy) private returns(bool){
+        if(merchants.length > 0){
+            for(uint i = 0; i<merchants.length;i++)
+                if (addy != merchants[i].addr)
+                    return true;
+                else 
+                    return false;
+        }
+       
+        
     }
 
     // =================================
@@ -128,7 +140,13 @@ contract RewardPoints {
     // =================================
     // Admin Only Actions
     // =================================
+    
     function addMerchant(address _merchant) external onlyAdmin {
+            require(_merchant != address(0), "Invalid Address");
+            require(NotMerchant(_merchant),"Already a merchant!");
+            
+       
+        //require(_merchant != User.(_merchant)
         // TODO: your code here
         // Hints: Remember the index into the array is the ID
         // 1. Create a new merchant and assign various fields
