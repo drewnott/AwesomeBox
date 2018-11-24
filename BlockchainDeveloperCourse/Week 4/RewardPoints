@@ -109,15 +109,6 @@ contract RewardPoints {
         users.push(User(0, 0, false, 0, 0));
         owner = msg.sender;
     }
-    
-    function NotMerchant(address addy) private returns(bool){
-        if(merchants.length > 0){
-            for(uint i = 0; i<merchants.length;i++)
-                if (addy != merchants[i].addr)
-                    return true;
-                else 
-                    return false;
-        }
        
         
     }
@@ -143,9 +134,14 @@ contract RewardPoints {
     
     function addMerchant(address _merchant) external onlyAdmin {
             require(_merchant != address(0), "Invalid Address");
-            require(NotMerchant(_merchant),"Already a merchant!");
-            
-       
+            //Do I need a condition for the case when the address is already a merchant?
+            Merchant memory merchant;  //Creates temp object to set field values in struct
+            merchant.addr = _merchant; //Sets merchant address to function value 
+            merchants.push(merchant);  //Pushes merchant object into struct
+            merchant.id = merchants.indexOf(merchant); //Sets ID of merchant to its corresponding 
+                                                       //array index.
+            addrToMerchantId[_merchant] = merchants.indexOf(merchant) //Updates addrToMerchantId mapping
+            Emit event AddedMerchant(address indexed merchant, uint indexed id);
         //require(_merchant != User.(_merchant)
         // TODO: your code here
         // Hints: Remember the index into the array is the ID
