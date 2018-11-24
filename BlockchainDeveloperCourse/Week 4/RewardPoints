@@ -116,8 +116,9 @@ contract RewardPoints {
     // =================================
     // Owner Only
     // =================================
-    function addAdmin(address _admin) external onlyOwner {
+     function addAdmin(address _admin) external onlyOwner {
         require(_admin != address(0), "Invalid Address!");
+        require(!merchantExist(addrToMerchantID[_admin]),"Merchants can't be Admins");
         isAdmin[_admin] = true; //Adds address to list of admins.
                                 //Note: Check is this address is already admin or merchant or employee
     }
@@ -133,15 +134,28 @@ contract RewardPoints {
     // =================================
     
     function addMerchant(address _merchant) external onlyAdmin {
-            require(_merchant != address(0), "Invalid Address");
-            //Do I need a condition for the case when the address is already a merchant?
+        require(_merchant != address(0), "Invalid Address");
+        //Do I need a condition for the case when the address is already a merchant?
+        if (merchants.length = 0){
             Merchant memory merchant;  //Creates temp object to set field values in struct
             merchant.addr = _merchant; //Sets merchant address to function value 
+            merchant.id = 0; //Sets ID of merchant to its corresponding 
+                                                   //array index.
+            merchant.isApproved = true;
             merchants.push(merchant);  //Pushes merchant object into struct
-            merchant.id = merchants.indexOf(merchant); //Sets ID of merchant to its corresponding 
-                                                       //array index.
-            addrToMerchantId[_merchant] = merchants.indexOf(merchant) //Updates addrToMerchantId mapping
-            Emit event AddedMerchant(address indexed merchant, uint indexed id);
+            addrToMerchantId[_merchant] = 0; //Updates addrToMerchantId mapping
+        }
+        else if (merchants.length>0){
+            Merchant memory merchant;  //Creates temp object to set field values in struct
+            merchant.addr = _merchant; //Sets merchant address to function value 
+            merchant.id = merchants.length - 1; //Sets ID of merchant to its corresponding 
+                                                   //array index.
+            merchant.isApproved = true;
+            merchants.push(merchant);  //Pushes merchant object into struct
+            addrToMerchantId[_merchant] = merchants.length -1; //Updates addrToMerchantId mapping
+        }
+        }
+    Emit event AddedMerchant(address indexed merchant, uint indexed id);        
         //require(_merchant != User.(_merchant)
         // TODO: your code here
         // Hints: Remember the index into the array is the ID
@@ -152,12 +166,15 @@ contract RewardPoints {
     }
 
     function banMerchant(uint _id) external onlyAdmin {
+        Merchant[_id].isApproved = false;
         // TODO: your code here
         // Hints: Only ban merchants that are valid and
         // remember we're not removing a merchant.
     }
 
     function approveMerchant(uint _id) external onlyAdmin {
+        require(isMerchantValid[_id],"Not a Merchant or not approved by administrator");
+        Merchant[_id].isApproved = true;
         // TODO: your code here
         // Hints: Do the reverse of banMerchant
     }
