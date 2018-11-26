@@ -2,7 +2,6 @@ pragma solidity ^0.5;
 
 contract RewardPoints {
     address private owner;
-    //Should I add an employee Struct with their ID and whether or not they are approved to be admins?
     //Admins are not able to participate in business ? Double back to this
     mapping(address => bool) private isAdmin; // Quick way to check if an addr is an Admin
 
