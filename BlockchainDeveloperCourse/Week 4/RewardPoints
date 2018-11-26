@@ -48,6 +48,7 @@ contract RewardPoints {
 
     event RewardedUser(address indexed user, uint indexed merchantId, uint points);
     event RedeemedPoints(address indexed user, uint indexed merchantId, uint points);
+    event TransferMerchantPoints(address indexed user, address indexed merchantId, unit points);
 
     modifier onlyOwner() {
         require(msg.sender == owner);
@@ -75,15 +76,15 @@ contract RewardPoints {
     }
 
     modifier onlyMerchantOwner() {
-        require(isMerchantOwner(msg.sender));
+        require(isMerchantOwner(msg.sender),"Merchant owner only.");
         _;
     }
 
     modifier onlyMerchant() {
         uint id = addrToMerchantId[msg.sender];
         bool isOperator = merchants[id].isOperator[msg.sender];
-        require(isMerchantValid(id));
-        require(isMerchantOwner(msg.sender) || isOperator);
+        require(isMerchantValid(id),"Merchant not authorized.");
+        require(isMerchantOwner(msg.sender) || isOperator, "Merchant not authorized to operate.");
         _;
     }
 
@@ -98,7 +99,7 @@ contract RewardPoints {
     }
 
     modifier onlyUser() {
-        require(isUserValid(addrToUserId[msg.sender]));
+        require(isUserValid(addrToUserId[msg.sender]),"You're not authorized to shop here.");
         _;
     }
     
@@ -116,11 +117,12 @@ contract RewardPoints {
     // =================================
     // Owner Only
     // =================================
-     function addAdmin(address _admin) external onlyOwner {
+    function addAdmin(address _admin) external onlyOwner {
         require(_admin != address(0), "Invalid Address!");
         require(!merchantExist(addrToMerchantID[_admin]),"Merchants can't be Admins");
         isAdmin[_admin] = true; //Adds address to list of admins.
                                 //Note: Check is this address is already admin or merchant or employee
+        event AddedAdmin(address indexed admin);
     }
 
     function removeAdmin(address _admin) external onlyOwner {
@@ -144,13 +146,13 @@ contract RewardPoints {
             merchant.isApproved = true;
             merchants.push(merchant);  //Pushes merchant object into struct
             addrToMerchantId[_merchant] = merchants.length; //Updates addrToMerchantId mapping
-    Emit event AddedMerchant(address indexed merchant, uint indexed id);        
+     emit AddedMerchant(address indexed merchant, uint indexed id);        
     }
 
     function banMerchant(uint _id) external onlyAdmin {
         require(isMerchantValid[_id],"Not A Merchant");
         Merchant[_id].isApproved = false;
-        Emit event BannedMerchant(uint indexed merchantId);
+         emit BannedMerchant(uint indexed merchantId);
     }
 
     function approveMerchant(uint _id) external onlyAdmin {
@@ -174,7 +176,7 @@ contract RewardPoints {
 
     function banUser(address _user) external onlyAdmin {
         require(_admin != address(0), "Invalid Address!");
-        require(isUserValid(addrToUserId[_user]), "Already Banned");
+        require(isUserValid(addrToUserId[_user]), "I'm sure we'd all like to double tap the ban button on some people, but sadly, you can't here.");
         User[addrToUserId[_user]].isApproved = false;
         event BannedUser(address indexed user, uint indexed id);
     }
@@ -189,55 +191,61 @@ contract RewardPoints {
     // Merchant Owner Only Actions
     // =================================
     function addOperator(address _operator) external onlyMerchantOwner {
-        require(_merchant != address(0), "Invalid Address");
-        //Do I need a condition for the case when the address is already a merchant?
-            Merchant memory operator;  //Creates temp object to set field values in struct
-            operator.addr = _operator; //Sets merchant address to function value 
-            operator.id = addrToMerchantId[msg.sender]; //Sets ID of merchant to its corresponding 
-                                                   //array index.
-            operator.isApproved = true;
-            operator.isOperator[_operator] = true; // Authorizes user to conduct business under owner merchant
-            merchants.push(operator);  //Pushes merchant object into struct
-            addrToMerchantId[_operator] = merchants.length; //Updates addrToMerchantId mapping
-        // TODO: your code here
-        // Hints:
-        // 1. Get the merchant ID from msg.sender
-        // 2. Set the correct field within the Merchant Struct
-        // 3. Update addrToMerchantId mapping
-        // 4. Emit event
+        require(_operator != address(0), "You're crazy ! This isn't a valid address.");
+        merchants[addrToMerchantId[msg.sender]].isOperator[_operator] = true; //Approving Operator via their address
+        addrToMerchantId[_operator] = addrToMerchantId[msg.sender]; //Updating Address mapping of operator
+        emit AddedOperator(uint indexed merchantId, address indexed operator);
     }
 
     function removeOperator(address _operator) external onlyMerchantOwner {
-        // TODO: your code here
-        // Hints: Do the reverse of addOperator
+        require(_operator != address(0), "Invalid Address");
+        merchants[addrToMerchantId[msg.sender]].isOperator[_operator] = false; //Banning Operator via their address
+        emit RemovedOperator(uint indexed merchantId, address indexed operator);
     }
 
     function transferMerchantOwnership(address _newAddr) external onlyMerchantOwner {
-        // TODO: your code here
-        // Hints: Similar to addOperator but update different fields
-        // but remember to update the addrToMerchantId twice. Once to
-        // remove the old owner and once for the new owner.
+         require(_operator != address(0), "Invalid Address");
+         merchants[addrToMerchantId[msg.sender]].addr = _newAddr; //Changing owner's address to new owner's address.
+         merchants[addrToMerchantId[_newAddr]].id = merchants[addrToMerchantId[msg.sender]].id; //Giving new owner the old owner's ID
+         addrToMerchantId[_newAddr] = addrToMerchantId[msg.sender]; //Updating the address to ID mapping
+         addrToMerchantId[msg.sender] = 0; // Nullifying previous owner's
+         emit TransferredMerchantOwnership(uint indexed merchantId, address oldOwner, address newOwner);
     }
 
     // =================================
     // Merchant only actions
     // =================================
     function rewardUser(address _user, uint _points) external onlyMerchant {
-        // TODO: your code here
-        // Hints: update the total and per merchant points
-        // for the user in the User struct.
+         require(_operator != address(0), "Invalid Address");
+         users[addrToUserId[_user]].totalEarnedPoints += _points; //Updates User's total earned points accross all merchants
+         users[addrToUserId[_user]].merchantToEarnedPts[addrToMerchantId[msg.sender]] += _points; //Updates User's total earned points for this
+                                                                                            //particular merchant i.e msg.sender
+         emit RewardedUser(address indexed user, uint indexed merchantId, uint points);
     }
 
     // =================================
     // User only action
     // =================================
     function redeemPoints(uint _mId, uint _points) external onlyUser {
-        // TODO: your code here
-        // Hints:
-        // 1. Get the user ID from caller
-        // 2. Ensure user has at least _points at merchant with id _mID
-        // 3. Update the appropriate fields in User structs
-        // 4. Emit event
+        require(_operator != address(0), "Invalid Address");
+        require(getUserEarnedPointsAtMerchant(msg.sender, _mId) > _points, "You don't have enough points at this merchant for this transaction.");
+        users[addrToUserId[msg.sender]].merchantToEarnedPts[addrToMerchantId[_mId]] -= _points; //Updating Total Earned Points at this merchant Balance
+        users[addrToUserId[msg.sender]].totalEarnedPoints -= _points; //Updating absolute total earned points 
+        users[addrToUserId[msg.sender]].totalReedemedPoints += _points; //Updates User's total redeemed points accross all merchants
+        users[addrToUserId[msg.sender]].merchantToRedeemedPts[addrToMerchantId[_mId]] += _points; //Updates User's total redeemed points for this
+                                                                                                //particular merchant i.e msg.sender
+        emit RedeemedPoints(address indexed user, uint indexed merchantId, uint points);
+    }
+    
+    function TransferMerchantPointsFrom(uint _mID, uint _uID, uint _points) external onlyUser{
+        require(isMerchantValid(_mID), "Invalid Merchant ID.");
+        require(isUserValid(uID),"Invalid User ID");
+        require(getUserEarnedPointsAtMerchant(msg.sender, _points) > _points, "If only we could give what we don't have. It's the thought that counts.");
+        users[addrToUserId[msg.sender]].totalEarnedPoints -= _points; //Update msg.sender's absolute total earned points balance
+        users[addrToUserId[msg.sender]].merchantToEarnedPts[_mID] -= _points; //Update msg.sender's total earned points balance at merchant
+        users[addrToUserId[_uID]].totalEarnedPoints += _points; //Update recipient user's absolute total earned points balance
+        users[addrToUserId[_uID]].merchantToEarnedPts[_mID] += _points; //Update recipient user's total earned points balance at merchant
+        emit TransferMerchantPoints(address indexed user, address indexed merchantId, unit points);
     }
 
     // =================================
