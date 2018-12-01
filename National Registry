@@ -179,7 +179,6 @@ contract Registrar {
     function editPerson (uint256 _ID, string memory _pob) public onlyRegistrar{
         require(editApproved[msg.sender], "Unauthorized Access");
         persons[_ID].placeOfBirth = _pob;
-        //TODO
         emit addedPerson(persons[_ID].name,
                          persons[_ID].sex,
                          persons[_ID].DOB,
@@ -191,8 +190,7 @@ contract Registrar {
     }
     
     //Getter Functions
-    
-    function getPersonDetailsById (uint256 _ID) public view returns (string, string, uint256, string){
+    function getPersonDemographicsById (uint256 _ID) public view returns (string, string, uint256, string){
         return (persons[_ID].name, persons[_ID].sex, persons[_ID].DOB, persons[_ID].placeOfBirth);
     }
     
