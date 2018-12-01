@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-contract Registry {
+contract Registrar {
     
     struct Person {
         string name;
@@ -12,27 +12,36 @@ contract Registry {
         string placeOfBirth;
     }
     
+    constructor () public {
+        owner = msg.sender;
+    }
+    
     mappping(address => bool) isRegistrar;
     
     Person [] persons;
     mapping (address => bool) alreadyRegistered;
     //Modifiers
-    modifier onlyNIB (){
+    
+    modifier onlyOwner(){
+        require(msg.sender = owner);
+    }
+    modifier onlyNIB(){
         require(true);
         _;
     }
     
-    modifier onlyPassportOffice (){
+    modifier onlyPassportOffice(){
         require(true);
         _;
     }
     
-    modifier onlyRoadTraffic (){
+    modifier onlyRoadTraffic(){
         require(true);
         _;
     }
     
-    modifier onlyRegistrar (){
+    modifier onlyRegistrar(){
+        require(msg.sender = owner || isRegistrar[msg.sender], "Unauthorized access.")
         _;
     }
     
@@ -41,6 +50,23 @@ contract Registry {
     //Modifier Road Traffic Only
     //Upper Administration  Only
     
-    //Functions After Registered 
-    functionn addPerson ()
-}
+    //Owner Functions 
+    function addRegistrar(address _addy) onlyOwner {
+        require (_addy != msg.sender) ;
+        isRegistrar[_addy] = true;
+    }
+    
+    function inactiveRegistrar(address _addy) onlyOwner {
+        require(_addy != msg.sender);
+        require(!isRegistrar[_addy]);
+        isRegistrar[_addy] = false;
+        
+    }
+    
+    //Registrar Functions
+    function addPerson(string _name, uint256 _dob, uint256){
+        Person memory person; // Setting object
+        
+    }
+    
+    
