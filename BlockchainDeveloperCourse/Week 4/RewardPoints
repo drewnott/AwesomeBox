@@ -20,7 +20,7 @@ contract Registrar {
     
     constructor () public {
         owner = msg.sender;
-        persons.push(Person("", "",0 ,0, 0, 0, 0, "")); //Removes zero index of array
+        persons.push(Person("", "", 0, 0, 0, 0, 0, 0, "")); //Removes zero index of array
     }
     
     mapping (address => bool) isRegistrar;
@@ -32,7 +32,8 @@ contract Registrar {
     
     event addedPerson(string name,
                         string sex,
-                        uint256 dob, 
+                        uint256 dob,
+                        uint256 passport,
                         uint256 dl, 
                         uint256 NIB, 
                         uint256 birthcertificate, 
@@ -86,8 +87,9 @@ contract Registrar {
     
     //Registrar Functions
     function addPerson( string memory _name,
-                        string memory sex,
+                        string memory _sex,
                         uint256 _dob, 
+                        uint256 _passport,
                         uint256 _dl, 
                         uint256 _NIB, 
                         uint256 _birthcertificate, 
@@ -95,17 +97,27 @@ contract Registrar {
         onlyRegistrar public {
             
         Person memory person; // Setting object person
+        uint256 id = persons.length;
+        persons[id].ID = id;
+        persons[id].name = _name;
+        persons[id].sex = _sex;
+        persons[id].DOB = _dob;
+        persons[id].Passport = _passport;
+        persons[id].DL = _dl;
+        persons[id].NIB = _NIB;
+        persons[id].BirthCertificate = _birthcertificate;
+        persons[id].placeOfBirth = _pob;
         //TODO: Adds field of person object 
         persons.push(person);
         
-        emit addedPerson(persons[_ID].name,
-                         persons.[_ID].sex,
-                         persons[_ID.DOB]
-                         persons.[_ID].Passport,
-                         persons[_ID].DL,
-                         persons[_ID].NIB
-                         persons[_ID.BirthCertificate]
-                         persons[_ID].placeOfBirth);
+        emit addedPerson(persons[persons.length].name,
+                         persons[persons.length].sex,
+                         persons[persons.length].DOB,
+                         persons[persons.length].Passport,
+                         persons[persons.length].DL,
+                         persons[persons.length].NIB,
+                         persons[persons.length].BirthCertificate,
+                         persons[persons.length].placeOfBirth);
     }
     
     function editPersonDOB (uint256 _ID, uint _dob) public onlyRegistrar{
@@ -113,12 +125,12 @@ contract Registrar {
         persons[_ID].DOB = _dob;
         //TODO
        emit addedPerson(persons[_ID].name,
-                         persons.[_ID].sex,
-                         persons[_ID.DOB]
-                         persons.[_ID].Passport,
+                         persons[_ID].sex,
+                         persons[_ID].DOB,
+                         persons[_ID].Passport,
                          persons[_ID].DL,
-                         persons[_ID].NIB
-                         persons[_ID.BirthCertificate]
+                         persons[_ID].NIB,
+                         persons[_ID].BirthCertificate,
                          persons[_ID].placeOfBirth);
     }
     
@@ -127,12 +139,12 @@ contract Registrar {
         persons[_ID].DL = _dl;
         //TODO
         emit addedPerson(persons[_ID].name,
-                         persons.[_ID].sex,
-                         persons[_ID.DOB]
-                         persons.[_ID].Passport,
+                         persons[_ID].sex,
+                         persons[_ID].DOB,
+                         persons[_ID].Passport,
                          persons[_ID].DL,
-                         persons[_ID].NIB
-                         persons[_ID.BirthCertificate]
+                         persons[_ID].NIB,
+                         persons[_ID].BirthCertificate,
                          persons[_ID].placeOfBirth);
     }
     
@@ -140,13 +152,13 @@ contract Registrar {
         require(editApproved[msg.sender], "Unauthorized Access");
         persons[_ID].NIB = _NIB;
         //TODO
-       emit addedPerson(persons[_ID].name,
-                         persons.[_ID].sex,
-                         persons[_ID.DOB]
-                         persons.[_ID].Passport,
+      emit addedPerson(persons[_ID].name,
+                         persons[_ID].sex,
+                         persons[_ID].DOB,
+                         persons[_ID].Passport,
                          persons[_ID].DL,
-                         persons[_ID].NIB
-                         persons[_ID.BirthCertificate]
+                         persons[_ID].NIB,
+                         persons[_ID].BirthCertificate,
                          persons[_ID].placeOfBirth);
     }
     
@@ -154,13 +166,13 @@ contract Registrar {
         require(editApproved[msg.sender], "Unauthorized Access");
         persons[_ID].BirthCertificate = _birthcertificate;
         //TODO
-        emit addedPerson(persons[_ID].name,
-                         persons.[_ID].sex,
-                         persons[_ID.DOB]
-                         persons.[_ID].Passport,
+       emit addedPerson(persons[_ID].name,
+                         persons[_ID].sex,
+                         persons[_ID].DOB,
+                         persons[_ID].Passport,
                          persons[_ID].DL,
-                         persons[_ID].NIB
-                         persons[_ID.BirthCertificate]
+                         persons[_ID].NIB,
+                         persons[_ID].BirthCertificate,
                          persons[_ID].placeOfBirth);
     }
     
@@ -169,12 +181,12 @@ contract Registrar {
         persons[_ID].placeOfBirth = _pob;
         //TODO
         emit addedPerson(persons[_ID].name,
-                         persons.[_ID].sex,
-                         persons[_ID.DOB]
-                         persons.[_ID].Passport,
+                         persons[_ID].sex,
+                         persons[_ID].DOB,
+                         persons[_ID].Passport,
                          persons[_ID].DL,
-                         persons[_ID].NIB
-                         persons[_ID.BirthCertificate]
+                         persons[_ID].NIB,
+                         persons[_ID].BirthCertificate,
                          persons[_ID].placeOfBirth);
     }
 }
