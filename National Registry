@@ -6,6 +6,7 @@ contract Registrar {
     
     struct Person {
         string name;
+        string sex;
         uint256 DOB;
         uint256 PassportNo;
         uint256 DriverLicense;
@@ -18,20 +19,29 @@ contract Registrar {
     
     constructor () public {
         owner = msg.sender;
-        push(Person("",0 ,0, 0, 0, 0, ""));
+        persons.push(Person("",0 ,0, 0, 0, 0, "")); //Removes zero index of array
     }
     
     mapping (address => bool) isRegistrar;
     
     Person [] persons;
-    mapping (address => bool) alreadyRegistered;
-    mapping (address => uint256) IDbyAddress;
-    //Modifiers
+    mapping (address => bool) alreadyRegistered; //Sets mapping to determine whether or not person is already registered
+    mapping (address => uint256) IDbyAddress; //Mapping to quickly get Individual ID by 
+    mapping (address => bool) editApproved; //Approves Registrar to edit fields
     
+     Event addedPerson(string memory _name,
+                        string memory sex,
+                        uint256 _dob, 
+                        uint256 _dl, 
+                        uint256 _NIB, 
+                        uint256 _birthcertificate, 
+                        string memory _pob);
+    //Modifier
     modifier onlyOwner(){
         require(msg.sender == owner);
         _;
     }
+    
     modifier onlyNIB(){
         require(true);
         _;
@@ -69,8 +79,13 @@ contract Registrar {
         isRegistrar[_addy] = false;
     }
     
+    function approveEdit(address _addy) onlyOwner public {
+        editApproved[_addy] = true;
+    }
+    
     //Registrar Functions
-    function addPerson(string memory _name,
+    function addPerson( string memory _name,
+                        string memory sex,
                         uint256 _dob, 
                         uint256 _dl, 
                         uint256 _NIB, 
@@ -81,11 +96,36 @@ contract Registrar {
         Person memory person; // Setting object person
         //TODO: Adds field of person object 
         persons.push(person);
+
     }
     
     function editPersonDOB (uint _dob) public onlyRegistrar{
-        
+        require(editApproved[msg.sender], "Unauthorized Access");
+        //TODO
+        emit addedPerson();
     }
     
-    function edit
+    function editPersonDL (uint _dl) public onlyRegistrar{
+        require(editApproved[msg.sender], "Unauthorized Access");
+        //TODO
+        emit addedPerson();
+    }
+    
+    function editPersonNIB (uint _NIB) public onlyRegistrar{
+        require(editApproved[msg.sender], "Unauthorized Access");
+        //TODO
+        emit addedPerson();
+    }
+    
+    function editPersonBirthCert (uint _birthcertificate) public onlyRegistrar{
+        require(editApproved[msg.sender], "Unauthorized Access");
+        //TODO
+        emit addedPerson();
+    }
+    
+    function editPerson (string memory _pob) public onlyRegistrar{
+        require(editApproved[msg.sender], "Unauthorized Access");
+        //TODO
+        emit addedPerson();
+    }
 }
