@@ -3,6 +3,7 @@ pragma solidity ^0.4.25;
 contract Registrar {
     
     address owner;
+    //enum PStatus {PENDING, APPROVED}
     
     struct Person {
         string name;
@@ -12,8 +13,12 @@ contract Registrar {
         uint256 Passport;
         uint256 DL;
         uint256 NIB;
-        uint256 BirthCertificate;
         string placeOfBirth;
+        //PStatus passportStat;
+        //To Come
+        //mapping (uint256 => uint256) PassportStatus;
+        //mapping (uint256 => uint256) DLStatus;
+        //mapping (uint256 => uint256) BirthCertificateStatus;
         //mapping (string => address) otherInfo;
         
     }
@@ -25,7 +30,7 @@ contract Registrar {
     
     mapping (address => bool) isRegistrar;
     
-    Person [] persons;
+    Person [] public persons;
     mapping (address => bool) alreadyRegistered; //Sets mapping to determine whether or not person is already registered
     mapping (address => uint256) IDbyAddress; //Mapping to quickly get Individual ID by 
     mapping (address => bool) editApproved; //Approves Registrar to edit fields
@@ -36,7 +41,6 @@ contract Registrar {
                         uint256 passport,
                         uint256 dl, 
                         uint256 NIB, 
-                        uint256 birthcertificate, 
                         string pob);
     //Modifier
     modifier onlyOwner(){
@@ -89,35 +93,26 @@ contract Registrar {
     function addPerson( string memory _name,
                         string memory _sex,
                         uint256 _dob, 
-                        uint256 _passport,
-                        uint256 _dl, 
-                        uint256 _NIB, 
-                        uint256 _birthcertificate, 
                         string memory _pob) 
         onlyRegistrar public {
             
         Person memory person; // Setting object person
         uint256 id = persons.length;
-        persons[id].ID = id;
-        persons[id].name = _name;
-        persons[id].sex = _sex;
-        persons[id].DOB = _dob;
-        persons[id].Passport = _passport;
-        persons[id].DL = _dl;
-        persons[id].NIB = _NIB;
-        persons[id].BirthCertificate = _birthcertificate;
-        persons[id].placeOfBirth = _pob;
+        person.ID = id;
+        person.name = _name;
+        person.sex = _sex;
+        person.DOB = _dob;
+        person.placeOfBirth = _pob;
         //TODO: Adds field of person object 
         persons.push(person);
         
-        emit addedPerson(persons[persons.length].name,
-                         persons[persons.length].sex,
-                         persons[persons.length].DOB,
-                         persons[persons.length].Passport,
-                         persons[persons.length].DL,
-                         persons[persons.length].NIB,
-                         persons[persons.length].BirthCertificate,
-                         persons[persons.length].placeOfBirth);
+        emit addedPerson(person.name,
+                         person.sex,
+                         person.DOB,
+                         person.Passport,
+                         person.DL,
+                         person.NIB,
+                         person.placeOfBirth);
     }
     
     function editPersonDOB (uint256 _ID, uint _dob) public onlyRegistrar{
@@ -130,9 +125,10 @@ contract Registrar {
                          persons[_ID].Passport,
                          persons[_ID].DL,
                          persons[_ID].NIB,
-                         persons[_ID].BirthCertificate,
                          persons[_ID].placeOfBirth);
     }
+    
+    function addPassport ()
     
     function editPersonDL (uint256 _ID, uint _dl) public onlyRegistrar{
         require(editApproved[msg.sender], "Unauthorized Access");
@@ -144,7 +140,6 @@ contract Registrar {
                          persons[_ID].Passport,
                          persons[_ID].DL,
                          persons[_ID].NIB,
-                         persons[_ID].BirthCertificate,
                          persons[_ID].placeOfBirth);
     }
     
@@ -153,20 +148,6 @@ contract Registrar {
         persons[_ID].NIB = _NIB;
         //TODO
       emit addedPerson(persons[_ID].name,
-                         persons[_ID].sex,
-                         persons[_ID].DOB,
-                         persons[_ID].Passport,
-                         persons[_ID].DL,
-                         persons[_ID].NIB,
-                         persons[_ID].BirthCertificate,
-                         persons[_ID].placeOfBirth);
-    }
-    
-    function editPersonBirthCert (uint256 _ID, uint _birthcertificate) public onlyRegistrar{
-        require(editApproved[msg.sender], "Unauthorized Access");
-        persons[_ID].BirthCertificate = _birthcertificate;
-        //TODO
-       emit addedPerson(persons[_ID].name,
                          persons[_ID].sex,
                          persons[_ID].DOB,
                          persons[_ID].Passport,
@@ -194,7 +175,11 @@ contract Registrar {
         return (persons[_ID].name, persons[_ID].sex, persons[_ID].DOB, persons[_ID].placeOfBirth);
     }
     
-    function getPersonDocumentsById (uint256 _ID) public view returns(string, uint256, uint256, uint256, uint256){
-        return (persons[_ID].name, persons[_ID].Passport, persons[_ID].DL, persons[_ID].NIB, persons[_ID].BirthCertificate);
+    function getPersonDocumentsById (uint256 _ID) public view returns(string, uint256, uint256, uint256){
+        return (persons[_ID].name, persons[_ID].Passport, persons[_ID].DL, persons[_ID].NIB);
+    }
+    
+    function getTotalRegistered () public view returns (uint256){
+        return persons.length-1;
     }
 }
