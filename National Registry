@@ -63,15 +63,22 @@ contract Registrar {
         require(_addy != msg.sender);
         require(!isRegistrar[_addy]);
         isRegistrar[_addy] = false;
-        
     }
     
     //Registrar Functions
-    function addPerson(string memory _name, uint256 _dob, uint256, uint256 _dl, uint256 _NIB, uint256 _birthcertificate, string _pob) onlyRegistrar public {
-        Person memory person; // Setting object person 
+    function addPerson(string memory _name,
+                        uint256 _dob, 
+                        uint256 _dl, 
+                        uint256 _NIB, 
+                        uint256 _birthcertificate, 
+                        string _pob) 
+        onlyRegistrar public {
+            
+        Person memory person; // Setting object person
+        //TODO: Adds field of person object 
         persons.push(person);
-        _mint();
+        _mint(); // Mints token unique to person 
     }
     
-    function (); 
+    function editPerson ()
 }
