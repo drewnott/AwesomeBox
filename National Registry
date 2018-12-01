@@ -2,6 +2,8 @@ pragma solidity ^0.5.0;
 
 contract Registrar {
     
+    address owner;
+    
     struct Person {
         string name;
         uint256 DOB;
@@ -16,14 +18,15 @@ contract Registrar {
         owner = msg.sender;
     }
     
-    mappping(address => bool) isRegistrar;
+    mapping (address => bool) isRegistrar;
     
     Person [] persons;
     mapping (address => bool) alreadyRegistered;
     //Modifiers
     
     modifier onlyOwner(){
-        require(msg.sender = owner);
+        require(msg.sender == owner);
+        _;
     }
     modifier onlyNIB(){
         require(true);
@@ -41,7 +44,7 @@ contract Registrar {
     }
     
     modifier onlyRegistrar(){
-        require(msg.sender = owner || isRegistrar[msg.sender], "Unauthorized access.")
+        require(msg.sender == owner || isRegistrar[msg.sender], "Unauthorized access.");
         _;
     }
     
@@ -51,12 +54,12 @@ contract Registrar {
     //Upper Administration  Only
     
     //Owner Functions 
-    function addRegistrar(address _addy) onlyOwner {
+    function addRegistrar(address _addy) onlyOwner public {
         require (_addy != msg.sender) ;
         isRegistrar[_addy] = true;
     }
     
-    function inactiveRegistrar(address _addy) onlyOwner {
+    function inactiveRegistrar(address _addy) onlyOwner public {
         require(_addy != msg.sender);
         require(!isRegistrar[_addy]);
         isRegistrar[_addy] = false;
@@ -64,9 +67,11 @@ contract Registrar {
     }
     
     //Registrar Functions
-    function addPerson(string _name, uint256 _dob, uint256){
-        Person memory person; // Setting object
-        
+    function addPerson(string memory _name, uint256 _dob, uint256, uint256 _dl, uint256 _NIB, uint256 _birthcertificate, string _pob) onlyRegistrar public {
+        Person memory person; // Setting object person 
+        persons.push(person);
+        _mint();
     }
     
-    
+    function (); 
+}
