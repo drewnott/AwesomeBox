@@ -12,16 +12,20 @@ contract Registrar {
         uint256 NIBNo;
         uint256 BirthCertificate;
         string placeOfBirth;
+        //mapping (string => address) otherInfo;
+        
     }
     
     constructor () public {
         owner = msg.sender;
+        push(Person("",0 ,0, 0, 0, 0, ""));
     }
     
     mapping (address => bool) isRegistrar;
     
     Person [] persons;
     mapping (address => bool) alreadyRegistered;
+    mapping (address => uint256) IDbyAddress;
     //Modifiers
     
     modifier onlyOwner(){
@@ -71,14 +75,17 @@ contract Registrar {
                         uint256 _dl, 
                         uint256 _NIB, 
                         uint256 _birthcertificate, 
-                        string _pob) 
+                        string memory _pob) 
         onlyRegistrar public {
             
         Person memory person; // Setting object person
         //TODO: Adds field of person object 
         persons.push(person);
-        _mint(); // Mints token unique to person 
     }
     
-    function editPerson ()
+    function editPersonDOB (uint _dob) public onlyRegistrar{
+        
+    }
+    
+    function edit
 }
