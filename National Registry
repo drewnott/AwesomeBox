@@ -1,0 +1,46 @@
+pragma solidity ^0.5.0;
+
+contract Registry {
+    
+    struct Person {
+        string name;
+        uint256 DOB;
+        uint256 PassportNo;
+        uint256 DriverLicense;
+        uint256 NIBNo;
+        uint256 BirthCertificate;
+        string placeOfBirth;
+    }
+    
+    mappping(address => bool) isRegistrar;
+    
+    Person [] persons;
+    mapping (address => bool) alreadyRegistered;
+    //Modifiers
+    modifier onlyNIB (){
+        require(true);
+        _;
+    }
+    
+    modifier onlyPassportOffice (){
+        require(true);
+        _;
+    }
+    
+    modifier onlyRoadTraffic (){
+        require(true);
+        _;
+    }
+    
+    modifier onlyRegistrar (){
+        _;
+    }
+    
+    //Modifer NIB
+    //Modifer Passport Only
+    //Modifier Road Traffic Only
+    //Upper Administration  Only
+    
+    //Functions After Registered 
+    functionn addPerson ()
+}
