@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bahamas Register 2.0</title>
+
+	<meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+	<h1>Bahamas Passport Online</h1>
+	<div class="navbar">
+		<a class="navbtn" id="signup_link" href="#">Register Me</a>
+		<a class="navbtn" id="myinfo_link" href="#">Profile</a>
+		<a class="navbtn" id="ppo_link" href="#">Passport Office</a>
+	<!--
+		<a class="navbtn" href="">National Insurance</a>
+		<a class="navbtn" href="">Road Traffic</a>
+	-->
+	</div>
+	<div id="content"></div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdn.ethers.io/scripts/ethers-v4.min.js" charset="utf-8" type="text/javascript"></script>
+	<script type="text/javascript" src="./viewer.js"></script>
+	<script type="text/javascript" src="./contract.js"></script>
+	<script type="text/javascript" src="./app.js"></script>
+	<script>
+		$(document).ready(function()
+		{
+			$("#myinfo_link").click(load_myinfo);
+			$("#signup_link").click(load_signup);
+			$("#ppo_link").click(load_ppo);
+
+			load_myinfo();
+
+			var contract = getContract();
+			console.log(contract);
+
+			//addPerson();
+		});
+	</script>
+</body>
+</html>
