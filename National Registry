@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.4.25;
 
 contract Registrar {
     
@@ -192,7 +192,11 @@ contract Registrar {
     
     //Getter Functions
     
-    function getPersonById (uint256 _ID) public return (string, string, uint256, uint256, uint256, uint256, uint256, string){
-        
+    function getPersonDetailsById (uint256 _ID) public view returns (string, string, uint256, string){
+        return (persons[_ID].name, persons[_ID].sex, persons[_ID].DOB, persons[_ID].placeOfBirth);
+    }
+    
+    function getPersonDocumentsById (uint256 _ID) public view returns(string, uint256, uint256, uint256, uint256){
+        return (persons[_ID].name, persons[_ID].Passport, persons[_ID].DL, persons[_ID].NIB, persons[_ID].BirthCertificate);
     }
 }
